@@ -70,6 +70,7 @@ def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 2
     print(matrix)
     print(len(matrix))
     print(len(matrix[0]))
+    create_img_solution(matrix, img.size[0], img.size[1])
     return 
 
 def get_color_mean(pixels : list):
@@ -87,12 +88,38 @@ def get_color_mean(pixels : list):
     return (int(sum_r / elements), int(sum_g / elements), int(sum_b / elements))
 
 def create_img_solution(matrix : list, w : int, h : int):
+    suma = 1
+    for m in matrix:
+        print(f"{suma} :")
+        print(m)
+        suma += 1
     data = np.zeros((h, w, 3), dtype=np.uint8)
     
     # Vamos a procesar toda la data para crear la imagen
+    size_square = len(matrix)
+    aux_x1 = 0
+    aux_y1 = size_square
+    aux_x2 = 0
+    aux_y2 = size_square
+
+    # Esto ya sería despues de que se obtenga el promedio de los colores para forma la matriz ya optimizada
+    for i in range(size_square):    
+        for j in range(size_square):
+            r, g, b = matrix[i][j]
+            data[aux_x1: aux_y1, aux_x2: aux_y2] = [r, g, b]
+            aux_x2 += size_square
+            aux_y2 += size_square        
+        # Sumar aux 1
+        aux_x1 += size_square
+        aux_y1 += size_square
+        # Resetear aux 2
+        aux_x2 = 0
+        aux_y2 = size_square
+
+    square_img = Image.fromarray(data)
+    square_img.show()
     
-    # Crear la imagen
     img = Image.fromarray(data, 'RGB')
+    img.save('testing.png')
     img.show()
-    return
     
