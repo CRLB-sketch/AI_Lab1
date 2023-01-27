@@ -51,11 +51,28 @@ class SquarePixel():
         color_mean = (int(sum_r / elements), int(sum_g / elements), int(sum_b / elements))
 
         # Vamos a determinar el color definitivo
+        r = color_mean[0]
+        g = color_mean[1]
+        b = color_mean[2]
+
+        if(r >= 200 and g >= 200 and b >= 200): # Blanco
+            return 0 
+
+        if(r <= 50 and g <= 50 and b <= 50): # Negro
+            return 1
         
-        return 
+        if(r >= 200 and g <= 50 and b <= 50): # Rojo (Punto de inicio)
+            return 3
+
+        if(r <= 50 and g >= 200 and b <= 50): # Verde (Puntos de meta)
+            return 4
+
+        return -1
 
 def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 20):
     img = Image.open(file_image)
+    img.thumbnail((100, 100))
+    img.show()
 
     # Tamanio
     width = img.size[0]
@@ -89,6 +106,19 @@ def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 2
             for s in squares:
                 s.add_color(colors, row, col)
 
-    
+    # Obtener el promedio y la matriz de todos los cuadros creados    
+    matrix = []
+    count = 1
+    matrix_aux = []
+    for s in squares:
+        if count >= amount_square_x:
+            matrix.append(matrix_aux)
+            count = 0
+            matrix_aux = []
+        else:
+            matrix_aux.append(s.get_color())
+        count += 1
 
-    return
+    print(matrix)
+
+    return 
