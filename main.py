@@ -13,9 +13,9 @@ Este se encargara de unir todas las clases.
 import processing_image
 
 def graph_search_lab(image_lab : str):
-    # 1) Obtener la imagen y leer si contenido
+    # 1) Obtener la imagen, leer si contenido y Discretizar la imagen
     matrix_discreted_image = processing_image.discretize_image(image_lab)
-    # 2) Discretizar la imagen
+    print(matrix_discreted_image)
 
     # 3) Usar interfaz generica o clase abstracta para reprsentar el framework el problema formal
     # Para esta clase que se vaya a crear, debe recibir com parametro la construccion de la matriz obtenida

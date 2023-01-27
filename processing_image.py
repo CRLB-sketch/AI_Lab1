@@ -67,11 +67,9 @@ def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 2
                 aux_pixels.append(pixel)
         matrix.append(matrix_column)
         
-    print(matrix)
-    print(len(matrix))
-    print(len(matrix[0]))
+    matrix, matrix_nums = matrix_redefine_colors(matrix)
     create_img_solution(matrix, img.size[0], img.size[1])
-    return 
+    return matrix_nums
 
 def get_color_mean(pixels : list):
     sum_r = 0
@@ -87,12 +85,47 @@ def get_color_mean(pixels : list):
     elements = len(pixels)        
     return (int(sum_r / elements), int(sum_g / elements), int(sum_b / elements))
 
+def matrix_redefine_colors(matrix : list):
+    matrix_def_colors = []
+    matrix_with_numbers = []
+    for x in range(len(matrix)):
+        matrix_column_c = []
+        matrix_column_n = []
+        for y in range(len(matrix[0])):
+            r, g, b = matrix[x][y]
+            
+            if(r >= 250 and g <= 210 and b <= 210): # Color Rojo
+                color = (255, 0, 0)
+                matrix_column_c.append(color)
+                matrix_column_n.append(2)
+                
+            elif(r <= 210 and g >= 250 and b <= 210): # Color Verde
+                color = (0, 255, 0)
+                matrix_column_c.append(color)
+                matrix_column_n.append(3)
+            
+            elif(r <= 140 and g <= 140 and b <= 140): # Color Negro
+                color = (0, 0, 0)
+                matrix_column_c.append(color)
+                matrix_column_n.append(1)
+                
+            elif(r >= 140 and g >= 140 and b >= 140): # Color Blanco
+                color = (255, 255, 255)
+                matrix_column_c.append(color)
+                matrix_column_n.append(0)
+                                
+            else: # Por si el color no es valido vamos a verificar
+                print(f"=====> {r}, {g}, {b}")
+                color = (0, 0, 255)
+                matrix_column_c.append(color)
+                matrix_column_n.append(-1)
+                
+        matrix_def_colors.append(matrix_column_c)        
+        matrix_with_numbers.append(matrix_column_n)
+        
+    return matrix_def_colors, matrix_with_numbers
+
 def create_img_solution(matrix : list, w : int, h : int):
-    suma = 1
-    for m in matrix:
-        print(f"{suma} :")
-        print(m)
-        suma += 1
     data = np.zeros((h, w, 3), dtype=np.uint8)
     
     # Vamos a procesar toda la data para crear la imagen
@@ -116,10 +149,8 @@ def create_img_solution(matrix : list, w : int, h : int):
         aux_x2 = 0
         aux_y2 = size_square
 
-    square_img = Image.fromarray(data)
-    square_img.show()
-    
+    square_img = Image.fromarray(data)    
     img = Image.fromarray(data, 'RGB')
-    img.save('testing.png')
+    img.save('img/testing.png')
     img.show()
     
