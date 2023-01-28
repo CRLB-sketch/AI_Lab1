@@ -12,7 +12,7 @@ Colores conforme a los numeros en cada matriz:
     - '0': Cuadro libre (Cuadro Blanco)
     - '1': Cuadro ocupado (Cuadro Negro)
     - '2': Punto de inicio (Cuadro Rojo)
-    - '3': Punto de victorio (Cuadro Verde)
+    - '3': Punto de victoria (Cuadro Verde)
 """
 ######################################################################################
 
@@ -88,16 +88,19 @@ def get_color_mean(pixels : list):
 def matrix_redefine_colors(matrix : list):
     matrix_def_colors = []
     matrix_with_numbers = []
+    start_ready = False
     for x in range(len(matrix)):
         matrix_column_c = []
         matrix_column_n = []
         for y in range(len(matrix[0])):
             r, g, b = matrix[x][y]
             
-            if(r >= 250 and g <= 210 and b <= 210): # Color Rojo
-                color = (255, 0, 0)
+            if(r >= 250 and g <= 210 and b <= 210): # Color Rojo                
+                color = (255, 0, 0) if not start_ready else (255, 255, 255)
                 matrix_column_c.append(color)
-                matrix_column_n.append(2)
+                num = 2 if not start_ready else 0
+                matrix_column_n.append(num) 
+                start_ready = True
                 
             elif(r <= 210 and g >= 250 and b <= 210): # Color Verde
                 color = (0, 255, 0)
