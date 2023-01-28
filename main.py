@@ -12,9 +12,9 @@ Este se encargara de unir todas las clases.
 
 import processing_image
 
-def graph_search_lab(image_lab : str):
+def graph_search_lab(image_lab : str, size_square : int):
     # 1) Obtener la imagen, leer si contenido y Discretizar la imagen
-    matrix_discreted_image = processing_image.discretize_image(image_lab)
+    matrix_discreted_image = processing_image.discretize_image(image_lab, size_square)
     print(matrix_discreted_image)
 
     # 3) Usar interfaz generica o clase abstracta para reprsentar el framework el problema formal
@@ -38,6 +38,7 @@ if __name__ == "__main__":
     print(f'{"":#^100}')
     print(f'{" Inteligencia Artificial - Laboratorio 1 ":#^100}')
 
-    graph_search_lab("img/test1.png")
-
+    # graph_search_lab("img/test1.png", 20)
+    graph_search_lab("img/test2.png", 25)
+    
     print(f'{"":#^100}')

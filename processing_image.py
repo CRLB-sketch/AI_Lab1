@@ -21,7 +21,7 @@ Colores conforme a los numeros en cada matriz:
 from PIL import Image, ImageFilter
 import numpy as np
 
-def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 20):
+def discretize_image(file_image : str, square_pixels = 20):
     img = Image.open(file_image)
     pixels = img.load()
 
@@ -37,7 +37,7 @@ def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 2
         for y in range(height):
             pixel = pixels[x, y]
             # Se llevara a cabo la suma y promedios de los colores para luego guardarlo en la matriz
-            if(len(aux_pixels) >= pixels_square_h):
+            if(len(aux_pixels) >= square_pixels):
                 pixel_mean = get_color_mean(aux_pixels)
                 matrix_column.append(pixel_mean)
                 aux_pixels = []
@@ -58,7 +58,7 @@ def discretize_image(file_image : str, pixels_square_h = 20, pixels_square_w = 2
         aux_pixels = []
         for y in range(len(matrix_zip_list[0])):
             pixel = pixels[x][y]
-            if(len(aux_pixels) >= pixels_square_h):
+            if(len(aux_pixels) >= square_pixels):
                 pixel_mean = get_color_mean(aux_pixels)
                 matrix_column.append(pixel_mean)
                 aux_pixels = []
@@ -77,10 +77,10 @@ def get_color_mean(pixels : list):
     sum_b = 0
     
     for colors in pixels:
-        r, g, b = colors
-        sum_r += r
-        sum_g += g
-        sum_b += b
+        # r, g, b = colors
+        sum_r += colors[0]
+        sum_g += colors[1]
+        sum_b += colors[2]
         
     elements = len(pixels)        
     return (int(sum_r / elements), int(sum_g / elements), int(sum_b / elements))
