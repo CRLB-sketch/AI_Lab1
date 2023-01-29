@@ -4,21 +4,26 @@ _copyright_ = "Universidad el Valle de Guatemala, Inteligencia Artifical 2023"
 _status_ = "Student of Computer Science"
 
 """
-Framework:
-    - actions(s)
-    - stepCost(s, a, s')
-    - etc
+Framework: Clase Abstractas y Derivadas de este
+
+Por medio de esta clase se puede crear mas frameworks con la misma base
 """
 ######################################################################################
 
 from abc import ABC, abstractmethod
-# from typing import override
+from overrides import override
+
+from collections import deque
+from node import Node
 
 # Definir el problema
 class Framework(ABC):        
     def __init__(self, initial, goal = None) -> None:
         self.initial = initial
         self.goal = goal
+        self.explored = None
+        self.explored_amount = 0
+        self.solution = None
         super().__init__()
     
     @abstractmethod
@@ -32,49 +37,37 @@ class Framework(ABC):
     @abstractmethod
     def is_goal(self, state):        
         ...
-    
-    @abstractmethod
-    def step_cost(self, state, actions, reach_state):
-        ...
         
     @abstractmethod
-    def path_cost(self, c, state1, action, state2):
+    def path_cost(self, c, state1, action, state2):        
         ...
-            
+                
 # Definir el Laberinto en base a Framework
 class Labyrinth(Framework):
     def __init__(self, matrix, goal = None) -> None:
         super().__init__(matrix, goal)
         
-        # Vamos a almacenar el tamaño de la matriz dada
+        # Vamos a almacenar el tamaño de la matriz dada        
+        self.matrix = matrix
         self.height = len(matrix)
         self.width = max(len(matrix) for _ in matrix)
-        
-        # Paredes del laberinto
-        self.laby_walls = []   
         self.goal = []
+        
+        # Definir punto de partida y las metas disponibles
         for i in range(self.height):
             row = []
             for j in range(self.width):
                 try:
                     if matrix[i][j] == 2:
-                        # self.start = (i, j)
                         self.initial = (i, j)
                         row.append(False)
                     elif matrix[i][j] == 3:
                         self.goal.append((i, j))
                         row.append(False)
-                    elif matrix[i][j] == 0:
-                        row.append(False)
-                    else:
-                        row.append(True)
                 except IndexError:
                     row.append(False)
-            self.laby_walls.append(row)
-            
-        self.solution = None # Guardar solucion
-                
-    # @override                
+                        
+    @override                
     def actions(self, state):        
         row, col = state
         
@@ -90,24 +83,22 @@ class Labyrinth(Framework):
         acts = []
         for action, (x, y) in possible_actions:
             try:
-                if not self.laby_walls[x][y]:
+                if 0 <= x < self.height and 0 <= y < self.width and self.matrix[x][y] != 0:
                     acts.append((action, (x, y)))
             except IndexError:
                 continue
         return acts
         
-    # @override        
+    @override        
     def result(self, state, action):
-        ...
+        # Keep track of number of states explored
+        self.num_explored = 0
+        
             
-    # @override            
+    @override            
     def is_goal(self, state):
         return state == self.goal
     
-    # @override    
-    def step_cost(self, state, actions, reach_state):
-        ...
-        
-    # @override        
-    def path_cost(self, c, state1, action, state2):
-        ...        
+    @override
+    def path_cost(self, c, state1, action, state2):        
+        return c + 1

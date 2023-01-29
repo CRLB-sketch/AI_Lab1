@@ -18,10 +18,9 @@ def graph_search_lab(image_lab : str, size_square : int):
     # 1) Obtener la imagen, leer si contenido y Discretizar la imagen
     matrix_discreted_image = processing_image.discretize_image(image_lab, size_square)
     print(matrix_discreted_image)
-    lab = Labyrinth(matrix_discreted_image)
-    jaja = bfs(lab)
-    print(jaja)
-
+    labyrinth = Labyrinth(matrix_discreted_image)
+    dfs(labyrinth)
+    
     # 3) Usar interfaz generica o clase abstracta para reprsentar el framework el problema formal
     # Para esta clase que se vaya a crear, debe recibir com parametro la construccion de la matriz obtenida
     # Esta clase ayudara a deducir las demas funciones del framework:
