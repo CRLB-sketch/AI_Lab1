@@ -47,7 +47,6 @@ class Labyrinth(Framework):
         self.matrix = matrix
         self.height = len(matrix)
         self.width = max(len(matrix) for _ in matrix)
-        self.goal = []        
         
         # Definir punto de partida y las metas disponibles
         for i in range(self.height):

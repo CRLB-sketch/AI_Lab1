@@ -18,7 +18,7 @@ def bfs(framework):
         if len(frontier) == 0:
             raise Exception("No hay solucion para esta matriz")
                         
-        node = frontier.pop()
+        node = frontier.popleft()
         num_explored += 1
         
         if framework.is_goal(node.state):

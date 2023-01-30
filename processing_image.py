@@ -17,8 +17,6 @@ Colores conforme a los numeros en cada matriz:
 """
 ######################################################################################
 
-# Try with numpy, pillow
-
 from PIL import Image, ImageDraw
 import numpy as np
 
@@ -68,8 +66,7 @@ def discretize_image(file_image : str, square_pixels = 20):
                 aux_pixels.append(pixel)
         matrix.append(matrix_column)
         
-    matrix_nums = matrix_redefine_colors(matrix)
-    save_img_matrix(matrix_nums, "img/preview.png")
+    matrix_nums = matrix_redefine_colors(matrix)    
     return matrix_nums
 
 def get_color_mean(pixels : list):
