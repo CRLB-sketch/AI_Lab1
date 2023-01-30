@@ -62,7 +62,7 @@ class Labyrinth(Framework):
                         self.initial = (i, j)
                         row.append(False)
                     elif matrix[i][j] == 3:
-                        self.goal.append((i, j))
+                        self.goal = (i, j)
                         row.append(False)
                 except IndexError:
                     row.append(False)
