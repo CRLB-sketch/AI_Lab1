@@ -13,12 +13,13 @@ Colores conforme a los numeros en cada matriz:
     - '1': Cuadro ocupado (Cuadro Negro)
     - '2': Punto de inicio (Cuadro Rojo)
     - '3': Punto de victoria (Cuadro Verde)
+    - '4': Camino Recorriod (Cuadro Celeste)
 """
 ######################################################################################
 
 # Try with numpy, pillow
 
-from PIL import Image, ImageFilter
+from PIL import Image, ImageDraw
 import numpy as np
 
 def discretize_image(file_image : str, square_pixels = 20):
@@ -67,8 +68,8 @@ def discretize_image(file_image : str, square_pixels = 20):
                 aux_pixels.append(pixel)
         matrix.append(matrix_column)
         
-    matrix, matrix_nums = matrix_redefine_colors(matrix)
-    create_img_solution(matrix, img.size[0], img.size[1])
+    matrix_nums = matrix_redefine_colors(matrix)
+    save_img_matrix(matrix_nums, "img/preview.png")
     return matrix_nums
 
 def get_color_mean(pixels : list):
@@ -77,7 +78,6 @@ def get_color_mean(pixels : list):
     sum_b = 0
     
     for colors in pixels:
-        # r, g, b = colors
         sum_r += colors[0]
         sum_g += colors[1]
         sum_b += colors[2]
@@ -86,74 +86,66 @@ def get_color_mean(pixels : list):
     return (int(sum_r / elements), int(sum_g / elements), int(sum_b / elements))
 
 def matrix_redefine_colors(matrix : list):
-    matrix_def_colors = []
     matrix_with_numbers = []
     start_ready = False
     for x in range(len(matrix)):
-        matrix_column_c = []
         matrix_column_n = []
         for y in range(len(matrix[0])):
             r, g, b = matrix[x][y]
             
-            if(r >= 250 and g <= 210 and b <= 210): # Color Rojo                
-                color = (255, 0, 0) if not start_ready else (255, 255, 255)
-                matrix_column_c.append(color)
+            if(r >= 250 and g <= 210 and b <= 210): # Color Rojo                                
                 num = 2 if not start_ready else 0
                 matrix_column_n.append(num) 
                 start_ready = True
                 
-            elif(r <= 210 and g >= 250 and b <= 210): # Color Verde
-                color = (0, 255, 0)
-                matrix_column_c.append(color)
+            elif(r <= 210 and g >= 250 and b <= 210): # Color Verde                
                 matrix_column_n.append(3)
             
-            elif(r <= 140 and g <= 140 and b <= 140): # Color Negro
-                color = (0, 0, 0)
-                matrix_column_c.append(color)
+            elif(r <= 140 and g <= 140 and b <= 140): # Color Negro                
                 matrix_column_n.append(1)
                 
-            elif(r >= 140 and g >= 140 and b >= 140): # Color Blanco
-                color = (255, 255, 255)
-                matrix_column_c.append(color)
+            elif(r >= 140 and g >= 140 and b >= 140): # Color Blanco                
                 matrix_column_n.append(0)
                                 
             else: # Por si el color no es valido vamos a verificar
-                print(f"=====> {r}, {g}, {b}")
-                color = (0, 0, 255)
-                matrix_column_c.append(color)
+                print(f"=====> {r}, {g}, {b}")                
                 matrix_column_n.append(-1)
                 
-        matrix_def_colors.append(matrix_column_c)        
         matrix_with_numbers.append(matrix_column_n)
         
-    return matrix_def_colors, matrix_with_numbers
-
-def create_img_solution(matrix : list, w : int, h : int):
-    data = np.zeros((h, w, 3), dtype=np.uint8)
+    return matrix_with_numbers
     
-    # Vamos a procesar toda la data para crear la imagen
-    size_square = len(matrix)
-    aux_x1 = 0
-    aux_y1 = size_square
-    aux_x2 = 0
-    aux_y2 = size_square
+def save_img_matrix(matrix : list, filename : str):
+    square_size = 50
+    border_size = 0
+    height = len(matrix)
+    width = max(len(matrix) for _ in matrix)
 
-    # Esto ya sería despues de que se obtenga el promedio de los colores para forma la matriz ya optimizada
-    for i in range(size_square):    
-        for j in range(size_square):
-            r, g, b = matrix[i][j]
-            data[aux_x1: aux_y1, aux_x2: aux_y2] = [r, g, b]
-            aux_x2 += size_square
-            aux_y2 += size_square        
-        # Sumar aux 1
-        aux_x1 += size_square
-        aux_y1 += size_square
-        # Resetear aux 2
-        aux_x2 = 0
-        aux_y2 = size_square
-
-    square_img = Image.fromarray(data)    
-    img = Image.fromarray(data, 'RGB')
-    img.save('img/testing.png')
-    img.show()
+    img = Image.new(
+        "RGBA", (width * square_size, height * square_size),
+    )
+    draw = ImageDraw.Draw(img)
     
+    for i, x in enumerate(matrix):
+        for j, y in enumerate(x):
+            if matrix[i][j] == 0:
+                color = (255, 255, 255)
+            elif matrix[i][j] == 1:
+                color = (0, 0, 0)
+            elif matrix[i][j] == 2:
+                color = (255, 0, 0)
+            elif matrix[i][j] == 3:
+                color = (0, 255, 0)
+            elif matrix[i][j] == 4:
+                color = (66, 155, 255)
+            else:
+                color = (0, 0, 255)
+                
+            draw.rectangle(
+                ([(j * square_size + border_size, i * square_size + border_size),
+                ((j + 1) * square_size - border_size, (i + 1) * square_size - border_size)]),
+                fill=color
+            )
+            
+    img.save(filename)    
+    # img.show()

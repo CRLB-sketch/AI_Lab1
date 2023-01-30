@@ -13,9 +13,6 @@ Por medio de esta clase se puede crear mas frameworks con la misma base
 from abc import ABC, abstractmethod
 from overrides import override
 
-from collections import deque
-from node import Node
-
 # Definir el problema
 class Framework(ABC):        
     def __init__(self, initial, goal = None) -> None:
@@ -45,13 +42,12 @@ class Framework(ABC):
 # Definir el Laberinto en base a Framework
 class Labyrinth(Framework):
     def __init__(self, matrix, goal = None) -> None:
-        super().__init__(matrix, goal)
-        
+        super().__init__(matrix, goal)                
         # Vamos a almacenar el tamaño de la matriz dada        
         self.matrix = matrix
         self.height = len(matrix)
         self.width = max(len(matrix) for _ in matrix)
-        self.goal = []
+        self.goal = []        
         
         # Definir punto de partida y las metas disponibles
         for i in range(self.height):
@@ -83,7 +79,7 @@ class Labyrinth(Framework):
         acts = []
         for action, (x, y) in possible_actions:
             try:
-                if 0 <= x < self.height and 0 <= y < self.width and self.matrix[x][y] != 0:
+                if 0 <= x < self.height and 0 <= y < self.width and self.matrix[x][y] != 1:
                     acts.append((action, (x, y)))
             except IndexError:
                 continue
@@ -92,8 +88,13 @@ class Labyrinth(Framework):
     @override        
     def result(self, state, action):
         # Keep track of number of states explored
-        self.num_explored = 0
-        
+        solution = (action, state)
+        solution = solution[0] if solution is not None else None
+        for i, x in enumerate(self.matrix):
+            for j, y in enumerate(x):
+                if solution is not None and (i, j) in solution:
+                    self.matrix[i][j] = 4
+        return self.matrix
             
     @override            
     def is_goal(self, state):
