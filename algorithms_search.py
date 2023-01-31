@@ -74,6 +74,3 @@ def dfs(framework):
         
     return None
     
-# A*
-def a_star(framework):
-    ...

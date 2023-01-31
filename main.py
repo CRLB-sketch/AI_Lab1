@@ -17,15 +17,24 @@ from frameworks import Labyrinth
 
 def graph_search_lab(image_lab : str, size_square : int):
     # Vamos a discretizar la imagen    
+    print("Discretizando imagen...")
     matrix_discreted_image = processing_image.discretize_image(image_lab, size_square)
-    # Guardar imagen de la matriz creada
+    
+    # Guardar imagen de la matriz creada    
+    print("Matriz e imagen guardada como 'img/preview.png'")
     processing_image.save_img_matrix(matrix_discreted_image, "img/preview.png")
+    
     # Vamos a crear el framework tipo Laberinto
+    print("Analizando Laberinto...")    
     labyrinth = Labyrinth(matrix_discreted_image)
+    
     # Vamos a seleccionar un tipo de problema
-    solution = bfs(labyrinth)
+    print("Utilizando algoritmo establezido...")
+    solution = bfs(labyrinth) # ! Desde aqui se puede cambiar el algoritmo deseado
+    
     # Al final vamos a mostrar el resultado esperado
     processing_image.save_img_matrix(solution, "img/solution.png")
+    print("El proceso se llevo de forma exitosa :D")
     
 if __name__ == "__main__":
     print(f'{"":#^100}')
